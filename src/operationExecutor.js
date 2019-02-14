@@ -33,8 +33,16 @@ class OperationExecutor {
      * @returns object that contains source object and his modified clone
      */
     firstTaskExecute(arg) {
-        //let copy = Object.assign({}, arg);
-        return JSON.parse(JSON.stringify(arg)) /* variable with result */;
+        let copy = {};
+        copy.obj1 = Object.assign({}, arg.obj1);
+        let relatives = [];
+        arg.obj1.relatives.forEach((item) =>
+            {
+                relatives.push(Object.assign({}, item));
+            });
+        //arg.obj1.relatives = []; //checking result
+        copy.obj1.relatives = relatives;
+        return copy;
     }
 
     /**
@@ -44,9 +52,9 @@ class OperationExecutor {
      * @returns object that contains source objects and their combined and modified clone
      */
     secondTaskExecute(arg) {
-        return {...arg.obj1, ...arg.obj2};
-        /* variable with result */
-        ;
+        let r = {...arg.obj1, ...arg.obj2};
+        //arg.obj1.a = 99; //checking result
+        return r;
     }
 
     /**
@@ -58,14 +66,15 @@ class OperationExecutor {
     thirdTaskExecute(arg) {
         let relatives = arg.obj1.relatives;
         relatives.forEach((item) => {
-            if (item.firstName == "Lena" || item.firstName == "Tanya") {
+            if (item.firstName === "Lena" || item.firstName === "Tanya") {
                 item.gender = "female";
             }
-            if (item.firstName == "Roma") {
+            if (item.firstName === "Roma") {
                 item.gender = "male";
             }
         });
-        return relatives;
+        arg.obj1.relatives = relatives;
+        return arg;
     }
 
     /**
@@ -78,9 +87,9 @@ class OperationExecutor {
         let relatives = arg.obj1.relatives;
         let result = [];
         relatives.forEach((item) => {
-            if (item.gender == "female") {
+            if (item.gender === "female") {
                 const name = item.firstName;
-                result.push(`${name}, hello! We are glad to see\n`);
+                result.push(`${name}, hello! We are glad to see you\n`);
             }
         });
         return result /* variable with result */;
@@ -105,10 +114,15 @@ class OperationExecutor {
      * @returns object that contains array of items that match the hostname on which the application is running
      */
     sixthTaskExecute(arg) {
-        /**
-         * Place your code here
-         */
-        return null;
+        let host = location.href;
+        let result = {};
+        result.hostNames = [];
+        arg.hostNames.forEach((item) => {
+            if (host.indexOf(item) >= 0) {
+                result.hostNames.push(item);
+            }
+        });
+        return result;
     }
 
     /**
@@ -118,10 +132,12 @@ class OperationExecutor {
      * @returns obj that contains swap pairs ('value: key')
      */
     seventhTaskExecute(arg) {
-        /**
-         * Place your code here
-         */
-        return null;
+        let result = {};
+        let keys = Object.keys(arg);
+        keys.forEach((item) => {
+            result[arg[item]] = item;
+        });
+        return result;
     }
 
     /**
@@ -131,10 +147,24 @@ class OperationExecutor {
      * @returns obj that built using array's values
      */
     eighthTaskExecute(arg) {
-        /**
-         * Place your code here
-         */
-        return null;
+        let result = {};
+        let arr = [];
+        arg.arr1.forEach((item) => {
+            arr.push(item);
+        });
+        arg.arr2.forEach((item) => {
+            arr.push(item);
+        });
+        let lastKey;
+        arr.forEach((item, i) => {
+            if (i % 2 === 0) {
+                result[item] = null;
+                lastKey = item;
+            } else {
+                result[lastKey] = item;
+            }
+        });
+        return result;
     }
 
     /**
@@ -144,10 +174,19 @@ class OperationExecutor {
      * @returns obj that contains pairs id: obj with this id
      */
     ninthTaskExecute(arg) {
-        /**
-         * Place your code here
-         */
-        return null;
+        let result = {};
+        let users = arg.users;
+        users.forEach((item, i) => {
+            let obj = {};
+            let keys = Object.keys(item);
+            keys.forEach((key) => {
+                if(key !== "id") {
+                    obj[key] = item[key];
+                }
+            });
+            result[item.id] = Object.assign({}, obj);
+        });
+        return result;
     }
 
     /**
@@ -157,11 +196,21 @@ class OperationExecutor {
      * @returns obj that contains the array with info about children of the node
      */
     tenthTaskExecute(arg) {
-        /**
-         * Place your code here
-         */
-        return null;
+
+        let element = document.getElementsByClassName(arg.className)[0];
+        let arr = element.childNodes;
+        let result = {children:[]};
+        arr.forEach((item) => {
+            result.children.push({
+                    "tag": item.tagName,
+                    "class": item.className
+                }
+            );
+        });
+        return result;
+
     }
+
 }
 
 export default OperationExecutor;
