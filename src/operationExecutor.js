@@ -35,13 +35,9 @@ class OperationExecutor {
     firstTaskExecute(arg) {
         let copy = {};
         copy.obj1 = Object.assign({}, arg.obj1);
-        let relatives = [];
-        arg.obj1.relatives.forEach((item) =>
-            {
-                relatives.push(Object.assign({}, item));
-            });
-        //arg.obj1.relatives = []; //checking result
-        copy.obj1.relatives = relatives;
+        copy.obj1.relatives = arg.obj1.relatives.map((item) => {
+            return item;
+        });
         return copy;
     }
 
@@ -52,9 +48,8 @@ class OperationExecutor {
      * @returns object that contains source objects and their combined and modified clone
      */
     secondTaskExecute(arg) {
-        let r = {...arg.obj1, ...arg.obj2};
-        //arg.obj1.a = 99; //checking result
-        return r;
+        let result = {...arg.obj1, ...arg.obj2};
+        return result;
     }
 
     /**
@@ -66,10 +61,10 @@ class OperationExecutor {
     thirdTaskExecute(arg) {
         let relatives = arg.obj1.relatives;
         relatives.forEach((item) => {
-            if (item.firstName === "Lena" || item.firstName === "Tanya") {
+            if (item.lastName === "Ivanova") {
                 item.gender = "female";
             }
-            if (item.firstName === "Roma") {
+            if (item.lastName === "Ivanov") {
                 item.gender = "male";
             }
         });
@@ -88,8 +83,7 @@ class OperationExecutor {
         let result = [];
         relatives.forEach((item) => {
             if (item.gender === "female") {
-                const name = item.firstName;
-                result.push(`${name}, hello! We are glad to see you\n`);
+                result.push(`${item.firstName}, hello! We are glad to see you\n`);
             }
         });
         return result /* variable with result */;
@@ -115,11 +109,10 @@ class OperationExecutor {
      */
     sixthTaskExecute(arg) {
         let host = location.href;
-        let result = {};
-        result.hostNames = [];
-        arg.hostNames.forEach((item) => {
+        let result = {"hostNames": []};
+        result.hostNames = arg.hostNames.filter((item) => {
             if (host.indexOf(item) >= 0) {
-                result.hostNames.push(item);
+                return true;
             }
         });
         return result;
@@ -133,8 +126,7 @@ class OperationExecutor {
      */
     seventhTaskExecute(arg) {
         let result = {};
-        let keys = Object.keys(arg);
-        keys.forEach((item) => {
+        Object.keys(arg).forEach((item) => {
             result[arg[item]] = item;
         });
         return result;
@@ -148,13 +140,7 @@ class OperationExecutor {
      */
     eighthTaskExecute(arg) {
         let result = {};
-        let arr = [];
-        arg.arr1.forEach((item) => {
-            arr.push(item);
-        });
-        arg.arr2.forEach((item) => {
-            arr.push(item);
-        });
+        let arr = [...arg.arr1, ...arg.arr2];
         let lastKey;
         arr.forEach((item, i) => {
             if (i % 2 === 0) {
@@ -176,15 +162,8 @@ class OperationExecutor {
     ninthTaskExecute(arg) {
         let result = {};
         let users = arg.users;
-        users.forEach((item, i) => {
-            let obj = {};
-            let keys = Object.keys(item);
-            keys.forEach((key) => {
-                if(key !== "id") {
-                    obj[key] = item[key];
-                }
-            });
-            result[item.id] = Object.assign({}, obj);
+        users.forEach((item) => {
+            result[item.id] = Object.assign({}, item);
         });
         return result;
     }
@@ -198,16 +177,16 @@ class OperationExecutor {
     tenthTaskExecute(arg) {
 
         let element = document.getElementsByClassName(arg.className)[0];
-        let arr = element.childNodes;
-        let result = {children:[]};
-        arr.forEach((item) => {
-            result.children.push({
-                    "tag": item.tagName,
-                    "class": item.className
-                }
-            );
+        element.childNodes.forEach((item) => {
+            if(item.tagName) {
+                arg.childrenInfo.push({
+                        "tag": item.tagName,
+                        "class": item.className
+                    }
+                );
+            }
         });
-        return result;
+        return arg;
 
     }
 
